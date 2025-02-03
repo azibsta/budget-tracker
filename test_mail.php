@@ -24,6 +24,6 @@ try {
     $mail->send();
     echo "✅ Email sent successfully!";
 } catch (Exception $e) {
-    echo "❌ Email sending failed. Error: " . $mail->ErrorInfo;
+    echo "❌ Email sending failed. Error: " . $mail->ErrorInfo; //hazman is here
 }
 ?>
