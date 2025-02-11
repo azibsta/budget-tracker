@@ -24,9 +24,15 @@ $expenses = $stmt->fetch()['total_expenses'] ?? 0.00;
 $balance = $income - $expenses;
 
 // ✅ Fetch budgets & spent per category
-$stmt = $conn->prepare("SELECT category, limit_amount FROM budgets WHERE user_id = ?");
-$stmt->execute([$user_id]);
+$stmt = $conn->prepare("
+    SELECT category, limit_amount 
+    FROM budgets 
+    WHERE user_id = ? 
+    AND category IN (SELECT DISTINCT category FROM expenses WHERE user_id = ?)
+");
+$stmt->execute([$user_id, $user_id]);
 $budgets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 
 $budgetData = [];
 $alerts = [];
@@ -35,17 +41,28 @@ foreach ($budgets as $budget) {
     $category = $budget['category'];
     $limit_amount = $budget['limit_amount'];
 
-    // ✅ Get total spent in this category
-    $stmt = $conn->prepare("SELECT COALESCE(SUM(amount), 0) AS total_spent FROM expenses WHERE user_id = ? AND category = ?");
-    $stmt->execute([$user_id, $category]);
-    $total_spent = $stmt->fetch()['total_spent'] ?? 0.00;
-
-    // Store in array
-    $budgetData[] = [
-        'category' => $category,
-        'limit' => $limit_amount,
-        'spent' => $total_spent
-    ];
+   
+    // ✅ Initialize array
+    $budgetData = [];
+    
+    foreach ($budgets as $budget) {
+        $category = $budget['category'];
+        $limit_amount = $budget['limit_amount'];
+    
+        // ✅ Ensure category exists in expenses before adding
+        $stmt = $conn->prepare("SELECT COALESCE(SUM(amount), 0) AS total_spent FROM expenses WHERE user_id = ? AND category = ?");
+        $stmt->execute([$user_id, $category]);
+        $total_spent = $stmt->fetch()['total_spent'] ?? 0.00;
+    
+        if ($total_spent > 0) { // ✅ Only add if there are expenses in this category
+            $budgetData[] = [
+                'category' => $category,
+                'limit' => $limit_amount,
+                'spent' => $total_spent
+            ];
+        }
+    }
+    
 
     // ✅ Create alert if spent exceeds budget
     if ($total_spent > $limit_amount) {
