@@ -6,36 +6,44 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require 'config/db.php';
 
-// ✅ Fetch theme setting
+// Fetch theme setting
 $stmt = $conn->prepare("SELECT value FROM settings WHERE name = 'theme'");
 $stmt->execute();
 $theme = $stmt->fetchColumn();
 
-// ✅ Fetch unread notifications count (if user is logged in)
+// Fetch unread notifications count (if user is logged in)
 $unreadNotifications = 0;
 if (isset($_SESSION['user_id'])) {
     $stmt = $conn->prepare("SELECT COUNT(*) FROM notifications WHERE user_id = ? AND is_read = 0");
     $stmt->execute([$_SESSION['user_id']]);
     $unreadNotifications = $stmt->fetchColumn();
 }
+
+// Get the current page name
+$current_page = basename($_SERVER['PHP_SELF']);
+
+// Pages where the navbar should be hidden
+$hideNavbarPages = ['login.php', 'register.php', 'forgot_password.php', 'reset_password.php'];
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Bootstrap 5 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Budget Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- Apply Theme -->
-<?php if ($theme == 'dark') { ?>
-    <link rel="stylesheet" href="dark-theme.css">
-<?php } else { ?>
-    <link rel="stylesheet" href="light-theme.css">
-<?php } ?>
+    <!-- Apply Theme -->
+    <?php if ($theme == 'dark') { ?>
+        <link rel="stylesheet" href="dark-theme.css">
+    <?php } else { ?>
+        <link rel="stylesheet" href="light-theme.css">
+    <?php } ?>
 </head>
 <body class="<?= $theme == 'dark' ? 'bg-dark text-white' : 'bg-light' ?>">
 
+<!-- ✅ Hide Navbar on Login, Register, Forgot Password, and Reset Password -->
+<?php if (!in_array($current_page, $hideNavbarPages)) { ?>
     <nav class="navbar navbar-expand-lg <?= $theme == 'dark' ? 'navbar-dark bg-dark' : 'navbar-light bg-white' ?>">
         <div class="container">
             <a class="navbar-brand" href="dashboard.php">Budget Tracker</a>
@@ -51,10 +59,10 @@ if (isset($_SESSION['user_id'])) {
                     <li class="nav-item"><a class="nav-link" href="view_transactions.php">Transactions</a></li>
                     <li class="nav-item"><a class="nav-link" href="feedback.php">Feedback</a></li>
 
-                    <!-- ✅ Notifications Icon -->
+                    <!-- Notifications Icon -->
                     <li class="nav-item">
                         <a class="nav-link position-relative" href="notifications.php">
-                            🔔 Notifications 
+                            🔔 Notifications
                             <?php if ($unreadNotifications > 0) { ?>
                                 <span class="badge bg-danger"><?= $unreadNotifications ?></span>
                             <?php } ?>
@@ -70,3 +78,4 @@ if (isset($_SESSION['user_id'])) {
             </div>
         </div>
     </nav>
+<?php } ?>
