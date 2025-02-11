@@ -61,7 +61,7 @@ $hideNavbarPages = ['login.php', 'register.php', 'forgot_password.php', 'reset_p
 
                     <!-- Notifications Icon -->
                     <li class="nav-item">
-                        <a class="nav-link position-relative" href="notifications.php">
+                        <a class="nav-link position-relative" href="notification.php">
                             🔔 Notifications
                             <?php if ($unreadNotifications > 0) { ?>
                                 <span class="badge bg-danger"><?= $unreadNotifications ?></span>
