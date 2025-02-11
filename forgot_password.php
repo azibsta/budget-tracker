@@ -6,6 +6,8 @@ require 'vendor/autoload.php'; // Load PHPMailer
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
+$message = "";
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
 
@@ -43,18 +45,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $mail->Body = "Hello,\n\nClick the link below to reset your password:\n\n$resetLink\n\nIf you did not request a password reset, please ignore this email.";
 
             $mail->send();
-            echo "✅ A password reset link has been sent to your email!";
+            $message = "<div class='alert alert-success text-center'>✅ A password reset link has been sent to your email!</div>";
         } catch (Exception $e) {
-            echo "❌ Email could not be sent. Error: " . $mail->ErrorInfo;
+            $message = "<div class='alert alert-danger text-center'>❌ Email could not be sent. Error: " . $mail->ErrorInfo . "</div>";
         }
     } else {
-        echo "❌ Email not found!";
+        $message = "<div class='alert alert-danger text-center'>❌ Email not found!</div>";
     }
 }
+
+include 'header.php';
 ?>
 
-<h2>Forgot Password</h2>
-<form method="POST">
-    Enter Your Email: <input type="email" name="email" required><br>
-    <button type="submit">Reset Password</button>
-</form>
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow-lg p-4 bg-white rounded" style="width: 400px;">
+        <h2 class="text-center mb-4">Forgot Password</h2>
+
+        <?= $message ?>
+
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label">Enter Your Email</label>
+                <input type="email" name="email" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Send Reset Link</button>
+        </form>
+
+        <div class="text-center mt-3">
+            <a href="login.php">Back to Login</a>
+        </div>
+    </div>
+</div>
+
+<?php include 'footer.php'; ?>

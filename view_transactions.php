@@ -1,6 +1,7 @@
 <?php
 session_start();
 require 'config/db.php';
+include 'header.php'; // Include Bootstrap navbar
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
@@ -8,40 +9,89 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user_id = $_SESSION['user_id'];
-
-echo "<h1>Transaction History</h1>";
-
-// Fetch income
-echo "<h2>Income</h2>";
-$stmt = $conn->prepare("SELECT * FROM income WHERE user_id = ? ORDER BY date DESC");
-$stmt->execute([$user_id]);
-$incomes = $stmt->fetchAll();
-foreach ($incomes as $income) {
-    echo "💰 {$income['amount']} from {$income['source']} on {$income['date']}<br>";
-}
-
-// Fetch expenses
-echo "<h2>Expenses</h2>";
-$stmt = $conn->prepare("SELECT * FROM expenses WHERE user_id = ? ORDER BY date DESC");
-$stmt->execute([$user_id]);
-$expenses = $stmt->fetchAll();
-foreach ($expenses as $expense) {
-    echo "💸 {$expense['amount']} spent on {$expense['category']} on {$expense['date']}<br>";
-
-    // Get budget for this category
-    $stmt = $conn->prepare("SELECT limit_amount FROM budgets WHERE user_id = ? AND category = ?");
-    $stmt->execute([$user_id, $expense['category']]);
-    $budget = $stmt->fetch();
-
-    if ($budget) {
-        $budget_limit = $budget['limit_amount'];
-        if ($expense['amount'] > $budget_limit) {
-            echo "<span style='color: red;'>⚠ Over Budget!</span>";
-        }
-    }
-
-    echo "<br>";
-}
-
-echo "<br><a href='dashboard.php'>Back to Dashboard</a>";
 ?>
+
+<div class="container mt-5">
+    <h2 class="mb-4">Transaction History</h2>
+
+    <ul class="nav nav-tabs" id="transactionTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="income-tab" data-bs-toggle="tab" data-bs-target="#income" type="button" role="tab">Income</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="expenses-tab" data-bs-toggle="tab" data-bs-target="#expenses" type="button" role="tab">Expenses</button>
+        </li>
+    </ul>
+
+    <div class="tab-content mt-3" id="transactionTabsContent">
+        <!-- Income Table -->
+        <div class="tab-pane fade show active" id="income" role="tabpanel">
+            <h3 class="mb-3">Income Transactions</h3>
+            <table class="table table-striped">
+                <thead class="table-success">
+                    <tr>
+                        <th>Amount ($)</th>
+                        <th>Source</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $stmt = $conn->prepare("SELECT * FROM income WHERE user_id = ? ORDER BY date DESC");
+                    $stmt->execute([$user_id]);
+                    $incomes = $stmt->fetchAll();
+                    foreach ($incomes as $income) {
+                        echo "<tr>
+                                <td><strong>$" . number_format($income['amount'], 2) . "</strong></td>
+                                <td>{$income['source']}</td>
+                                <td>{$income['date']}</td>
+                              </tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Expenses Table -->
+        <div class="tab-pane fade" id="expenses" role="tabpanel">
+            <h3 class="mb-3">Expense Transactions</h3>
+            <table class="table table-striped">
+                <thead class="table-danger">
+                    <tr>
+                        <th>Amount ($)</th>
+                        <th>Category</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $stmt = $conn->prepare("SELECT * FROM expenses WHERE user_id = ? ORDER BY date DESC");
+                    $stmt->execute([$user_id]);
+                    $expenses = $stmt->fetchAll();
+                    foreach ($expenses as $expense) {
+                        // Get budget for this category
+                        $stmt = $conn->prepare("SELECT limit_amount FROM budgets WHERE user_id = ? AND category = ?");
+                        $stmt->execute([$user_id, $expense['category']]);
+                        $budget = $stmt->fetch();
+
+                        $status = "<span class='badge bg-success'>Within Budget</span>";
+                        if ($budget && $expense['amount'] > $budget['limit_amount']) {
+                            $status = "<span class='badge bg-danger'>Over Budget</span>";
+                        }
+
+                        echo "<tr>
+                                <td><strong>$" . number_format($expense['amount'], 2) . "</strong></td>
+                                <td>{$expense['category']}</td>
+                                <td>{$expense['date']}</td>
+                                <td>{$status}</td>
+                              </tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<?php include 'footer.php'; ?>
