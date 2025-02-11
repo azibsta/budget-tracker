@@ -29,6 +29,7 @@ $stmt->execute([$user_id]);
 $budgets = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $budgetData = [];
+$alerts = [];
 
 foreach ($budgets as $budget) {
     $category = $budget['category'];
@@ -45,6 +46,11 @@ foreach ($budgets as $budget) {
         'limit' => $limit_amount,
         'spent' => $total_spent
     ];
+
+    // ✅ Create alert if spent exceeds budget
+    if ($total_spent > $limit_amount) {
+        $alerts[] = "<div class='alert alert-danger text-center'><strong>Warning!</strong> You have exceeded your budget for <b>{$category}</b>. Budget: \${$limit_amount}, Spent: \${$total_spent}.</div>";
+    }
 }
 
 // ✅ Fetch unread notifications
@@ -59,6 +65,11 @@ $conn->prepare("UPDATE notifications SET is_read = 1 WHERE user_id = ?")->execut
 
 <div class="container mt-5">
     <h2 class="mb-4">Dashboard</h2>
+
+    <!-- ✅ Show Budget Alerts -->
+    <?php foreach ($alerts as $alert) {
+        echo $alert;
+    } ?>
 
     <div class="row">
         <div class="col-md-4">
@@ -80,6 +91,32 @@ $conn->prepare("UPDATE notifications SET is_read = 1 WHERE user_id = ?")->execut
             </div>
         </div>
     </div>
+
+    <h3 class="mt-5">Budget Overview</h3>
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Category</th>
+                <th>Budget Limit ($)</th>
+                <th>Spent ($)</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($budgetData as $data) { 
+                $status = $data['spent'] > $data['limit'] 
+                    ? "<span class='badge bg-danger'>Over Budget</span>" 
+                    : "<span class='badge bg-success'>Within Budget</span>";
+            ?>
+                <tr>
+                    <td><?= ucfirst($data['category']) ?></td>
+                    <td>$<?= number_format($data['limit'], 2) ?></td>
+                    <td>$<?= number_format($data['spent'], 2) ?></td>
+                    <td><?= $status ?></td>
+                </tr>
+            <?php } ?>
+        </tbody>
+    </table>
 
     <div class="row mt-5">
         <div class="col-md-6 text-center">
@@ -104,7 +141,6 @@ $conn->prepare("UPDATE notifications SET is_read = 1 WHERE user_id = ?")->execut
     height: 300px !important; /* Fixes height */
     margin: auto; /* Centers charts */
 }
-
 </style>
 
 <script>
@@ -150,6 +186,5 @@ $conn->prepare("UPDATE notifications SET is_read = 1 WHERE user_id = ?")->execut
         }
     });
 </script>
-
 
 <?php include 'footer.php'; ?>
