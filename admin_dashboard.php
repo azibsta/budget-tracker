@@ -3,18 +3,17 @@ session_start();
 require 'config/db.php';
 include 'header.php';
 
-// Redirect if not admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
     header("Location: login.php");
     exit();
 }
 
-// Fetch total users
+// ✅ Fetch total users
 $stmt = $conn->prepare("SELECT COUNT(*) AS total_users FROM users");
 $stmt->execute();
 $total_users = $stmt->fetch()['total_users'];
 
-// Fetch total income & expenses
+// ✅ Fetch total income & expenses
 $stmt = $conn->prepare("SELECT COALESCE(SUM(amount), 0) AS total_income FROM income");
 $stmt->execute();
 $total_income = $stmt->fetch()['total_income'];
@@ -22,7 +21,6 @@ $total_income = $stmt->fetch()['total_income'];
 $stmt = $conn->prepare("SELECT COALESCE(SUM(amount), 0) AS total_expenses FROM expenses");
 $stmt->execute();
 $total_expenses = $stmt->fetch()['total_expenses'];
-
 ?>
 
 <div class="container mt-5">
@@ -49,6 +47,29 @@ $total_expenses = $stmt->fetch()['total_expenses'];
         </div>
     </div>
 
+    <!-- ✅ Generate Reports Section -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card bg-info text-white text-center p-3">
+                <h4>View Reports</h4>
+                <p>Generate reports on system usage and financial trends.</p>
+                <a href="admin_reports.php" class="btn btn-light">Generate Reports</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card bg-info text-white text-center p-3">
+            <h4>Manage Settings</h4>
+            <p>Update system configurations and features.</p>
+            <a href="admin_settings.php" class="btn btn-light">Go to Settings</a>
+        </div>
+    </div>
+</div>
+
+
+    <!-- ✅ Manage Users -->
     <h3 class="mt-5">Manage Users</h3>
     <table class="table table-striped">
         <thead class="table-dark">
@@ -89,6 +110,7 @@ $total_expenses = $stmt->fetch()['total_expenses'];
         </tbody>
     </table>
 
+    <!-- ✅ View & Manage User Feedback -->
     <h3 class="mt-5">User Feedback</h3>
     <table class="table table-bordered">
         <thead class="table-dark">

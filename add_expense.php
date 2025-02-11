@@ -1,6 +1,7 @@
 <?php
 session_start();
 require 'config/db.php';
+require 'config/alerts.php'; // Import alert system
 include 'header.php';
 
 if (!isset($_SESSION['user_id'])) {
@@ -15,16 +16,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $category = trim($_POST['category']); // Allow typed category
     $date = $_POST['date'];
 
-    // Insert expense into database
+    // ✅ Insert expense into database
     $stmt = $conn->prepare("INSERT INTO expenses (user_id, amount, category, date) VALUES (?, ?, ?, ?)");
     if ($stmt->execute([$user_id, $amount, $category, $date])) {
         $success = "✅ Expense added successfully!";
+        
+        // ✅ Run alert checks (Check if budget is exceeded)
+        runAlerts($user_id);
     } else {
         $error = "❌ Error: Could not add expense.";
     }
 }
 
-// Fetch unique categories from previous expenses for autocomplete
+// ✅ Fetch unique categories from previous expenses for autocomplete
 $stmt = $conn->prepare("SELECT DISTINCT category FROM expenses WHERE user_id = ?");
 $stmt->execute([$user_id]);
 $categories = $stmt->fetchAll(PDO::FETCH_COLUMN);
