@@ -26,6 +26,26 @@ $current_page = basename($_SERVER['PHP_SELF']);
 $hideNavbarPages = ['login.php', 'register.php', 'forgot_password.php', 'reset_password.php'];
 ?>
 
+<?php
+require 'config/db.php';
+
+function getBackgroundImage() {
+    global $conn;
+    $stmt = $conn->prepare("SELECT value FROM settings WHERE name = 'background_image'");
+    $stmt->execute();
+    $backgroundImage = $stmt->fetchColumn();
+
+    return !empty($backgroundImage) ? $backgroundImage : "default-background.jpg";
+}
+?>
+<style>
+body {
+    background: url('<?= getBackgroundImage() ?>') no-repeat center center fixed;
+    background-size: cover;
+}
+</style>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
