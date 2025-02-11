@@ -65,7 +65,7 @@ if (isset($_SESSION['user_id'])) {
                         <li class="nav-item"><a class="nav-link text-warning" href="admin_dashboard.php">Admin Panel</a></li>
                     <?php } ?>
 
-                    <li class="nav-item"><a class="nav-link btn btn-danger text-white" href="logout.php">Logout</a></li>
+                    <li class="nav-item"><a class="nav-link btn btn-danger text-black" href="logout.php">Logout</a></li>
                 </ul>
             </div>
         </div>
