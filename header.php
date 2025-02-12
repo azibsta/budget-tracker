@@ -94,12 +94,15 @@ $backgroundMedia = getBackgroundMedia();
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 'user') { ?>
                     <li class="nav-item"><a class="nav-link" href="dashboard.php">Dashboard</a></li>
                     <li class="nav-item"><a class="nav-link" href="add_income.php">Add Income</a></li>
                     <li class="nav-item"><a class="nav-link" href="add_expense.php">Add Expense</a></li>
                     <li class="nav-item"><a class="nav-link" href="set_budget.php">Set Budget</a></li>
                     <li class="nav-item"><a class="nav-link" href="view_transactions.php">Transactions</a></li>
                     <li class="nav-item"><a class="nav-link" href="feedback.php">Feedback</a></li>
+                    <li class="nav-item"><a class="nav-link" href="report_issue.php">Report Issue</a></li>
+                <?php } ?>
 
                     <!-- Notifications Icon -->
                     <li class="nav-item">
@@ -110,7 +113,10 @@ $backgroundMedia = getBackgroundMedia();
                             <?php } ?>
                         </a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="report.php">Report Issue</a></li>
+
+                    <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 'it_support') { ?>
+                        <li class="nav-item"><a class="nav-link text-warning" href="it_support_dashboard.php">It Support</a></li>
+                    <?php } ?>
 
                     <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') { ?>
                         <li class="nav-item"><a class="nav-link text-warning" href="admin_dashboard.php">Admin Panel</a></li>
