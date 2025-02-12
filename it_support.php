@@ -1,7 +1,8 @@
 <?php
 session_start();
-require '../config/db.php';
-include '../header.php';
+require 'C:/xampp/htdocs/budget-tracker/config/db.php';
+
+include 'C:/xampp/htdocs/budget-tracker/header.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../login.php");
@@ -37,4 +38,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </form>
 </div>
 
-<?php include '../footer.php'; ?>
+<?php include 'C:/xampp/htdocs/budget-tracker/footer.php'; ?>
