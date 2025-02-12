@@ -45,6 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endforeach; ?>
         </ul>
     <?php endif; ?>
+
+    <a href="ask-advisor-dashboard.php" class="btn btn-secondary mt-4">Ask Advisor</a>
 </div>
 
 <?php include 'footer.php'; // Adjusted path ?>

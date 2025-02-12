@@ -23,6 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Redirect based on role
         if ($user['role'] == 'admin') {
             header("Location: admin_dashboard.php"); // Redirect admins to admin panel
+        }else if ($user['role'] == 'advisor') {
+            header("Location: answer-question.php"); // Redirect financial advisors to advisor dashboard
         } else {
             header("Location: dashboard.php"); // Redirect users to normal dashboard
         }
