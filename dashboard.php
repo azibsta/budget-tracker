@@ -10,6 +10,16 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
+// ✅ Fetch notifications (User-Specific + Broadcasts)
+$stmt = $conn->prepare("
+    SELECT * FROM notifications 
+    WHERE user_id = ? OR is_broadcast = 1 
+    ORDER BY created_at DESC LIMIT 5
+");
+$stmt->execute([$_SESSION['user_id']]);
+$notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
 // ✅ Get total income
 $stmt = $conn->prepare("SELECT COALESCE(SUM(amount), 0) AS total_income FROM income WHERE user_id = ?");
 $stmt->execute([$user_id]);
@@ -87,6 +97,17 @@ $conn->prepare("UPDATE notifications SET is_read = 1 WHERE user_id = ?")->execut
     <?php foreach ($alerts as $alert) {
         echo $alert;
     } ?>
+
+<h3 class="mt-4">Notifications</h3>
+<ul class="list-group">
+    <?php foreach ($notifications as $note): ?>
+        <li class="list-group-item">
+            <?= htmlspecialchars($note['message']) ?> 
+            <small class="text-muted"><?= $note['created_at'] ?></small>
+        </li>
+    <?php endforeach; ?>
+</ul>
+
 
     <div class="row">
         <div class="col-md-4">

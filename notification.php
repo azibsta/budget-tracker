@@ -10,13 +10,17 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// ✅ Fetch notifications
-$stmt = $conn->prepare("SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC");
+// ✅ Fetch user-specific and broadcast notifications
+$stmt = $conn->prepare("
+    SELECT * FROM notifications 
+    WHERE user_id = ? OR is_broadcast = 1 
+    ORDER BY created_at DESC
+");
 $stmt->execute([$user_id]);
 $notifications = $stmt->fetchAll();
 
 // ✅ Mark notifications as read
-$conn->prepare("UPDATE notifications SET is_read = 1 WHERE user_id = ?")->execute([$user_id]);
+$conn->prepare("UPDATE notifications SET is_read = 1 WHERE user_id = ? OR is_broadcast = 1")->execute([$user_id]);
 
 ?>
 
@@ -28,7 +32,9 @@ $conn->prepare("UPDATE notifications SET is_read = 1 WHERE user_id = ?")->execut
     <?php } else { ?>
         <ul class="list-group">
             <?php foreach ($notifications as $note) { ?>
-                <li class="list-group-item"><?= htmlspecialchars($note['message']) ?> <small class="text-muted float-end"><?= $note['created_at'] ?></small></li>
+                <li class="list-group-item"><?= htmlspecialchars($note['message']) ?> 
+                    <small class="text-muted float-end"><?= $note['created_at'] ?></small>
+                </li>
             <?php } ?>
         </ul>
     <?php } ?>

@@ -12,44 +12,23 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
 $stmt = $conn->prepare("SELECT COUNT(*) AS total_users FROM users");
 $stmt->execute();
 $total_users = $stmt->fetch()['total_users'];
-
-// ✅ Fetch total income & expenses
-$stmt = $conn->prepare("SELECT COALESCE(SUM(amount), 0) AS total_income FROM income");
-$stmt->execute();
-$total_income = $stmt->fetch()['total_income'];
-
-$stmt = $conn->prepare("SELECT COALESCE(SUM(amount), 0) AS total_expenses FROM expenses");
-$stmt->execute();
-$total_expenses = $stmt->fetch()['total_expenses'];
 ?>
 
 <div class="container mt-5">
     <h2 class="mb-4 text-center">Admin Dashboard</h2>
 
     <div class="row text-center">
-        <div class="col-md-4">
+        <div class="col-mt-5">
             <div class="card bg-primary text-white p-4">
                 <h4>Total Users</h4>
                 <h3><?= $total_users ?></h3>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card bg-success text-white p-4">
-                <h4>Total Income</h4>
-                <h3>$<?= number_format($total_income, 2) ?></h3>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card bg-danger text-white p-4">
-                <h4>Total Expenses</h4>
-                <h3>$<?= number_format($total_expenses, 2) ?></h3>
             </div>
         </div>
     </div>
 
     <!-- ✅ Generate Reports Section -->
     <div class="row mt-4">
-        <div class="col-md-6">
+        <div class="col-mt-5">
             <div class="card bg-info text-white text-center p-3">
                 <h4>View Reports</h4>
                 <p>Generate reports on system usage and financial trends.</p>
@@ -59,14 +38,24 @@ $total_expenses = $stmt->fetch()['total_expenses'];
     </div>
 
     <div class="row mt-4">
-    <div class="col-md-6">
+    <div class="col-mt-5">
         <div class="card bg-info text-white text-center p-3">
             <h4>Manage Settings</h4>
             <p>Update system configurations and features.</p>
             <a href="admin_settings.php" class="btn btn-light">Go to Settings</a>
         </div>
     </div>
+    <div class="row mt-4">
+    <div class="col-mt-5">
+        <div class="card bg-info text-white text-center p-3">
+            <h4>Manage Notifications</h4>
+            <p>Send notifications to all users.</p>
+            <a href="admin_notifications.php" class="btn btn-light">Go to Notifications</a>
+        </div>
+    </div>
+    </div>
 </div>
+
 
 
     <!-- ✅ Manage Users -->
