@@ -36,13 +36,6 @@ $total_users = $stmt->fetch()['total_users'];
             </div>
         </div>
     </div>
-
-    <div class="col-mt-5">
-    <div class="card bg-danger text-white text-center p-3">
-        <h4>IT Support</h4>
-        <p>View and resolve user issues.</p>
-        <a href="it_support_dashboard.php" class="btn btn-light">Go to IT Support</a>
-    </div>
 </div>
 
 
