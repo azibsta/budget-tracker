@@ -161,8 +161,8 @@ $conn->prepare("UPDATE notifications SET is_read = 1 WHERE user_id = ?")->execut
     <!-- Financial Advisor Section -->
     <h3 class="mt-5">Financial Advisor</h3>
     <div class="list-group">
-        <a href="financial-advisor/analyze.php" class="list-group-item list-group-item-action">Analyze Financial Data</a>
-        <a href="financial-advisor/goals.php" class="list-group-item list-group-item-action">Set Financial Goals</a>
+        <a href="analyze.php" class="list-group-item list-group-item-action">Analyze Financial Data</a>
+        <a href="goals.php" class="list-group-item list-group-item-action">Set Financial Goals</a>
     </div>
 </div>
 
