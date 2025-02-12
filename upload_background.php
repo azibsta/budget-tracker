@@ -2,12 +2,12 @@
 session_start();
 require 'config/db.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['background_image'])) {
-    $file = $_FILES['background_image'];
-    $allowedTypes = ['image/png', 'image/jpeg'];
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['background_media'])) {
+    $file = $_FILES['background_media'];
+    $allowedTypes = ['image/png', 'image/jpeg', 'video/mp4', 'video/quicktime'];
 
     if (!in_array($file['type'], $allowedTypes)) {
-        $_SESSION['upload_message'] = "❌ Only PNG and JPEG files are allowed.";
+        $_SESSION['upload_message'] = "❌ Only PNG, JPEG, MP4, and MOV files are allowed.";
         header("Location: admin_settings.php");
         exit();
     }
@@ -21,11 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['background_image'])) 
     $targetFile = $uploadDir . $fileName;
 
     if (move_uploaded_file($file["tmp_name"], $targetFile)) {
-        // ✅ Store file path in database
-        $stmt = $conn->prepare("UPDATE settings SET value = ? WHERE name = 'background_image'");
-        $stmt->execute([$targetFile]);
-
-        $_SESSION['upload_message'] = "✅ Background image uploaded successfully!";
+        $_SESSION['upload_message'] = "✅ File uploaded successfully!";
     } else {
         $_SESSION['upload_message'] = "❌ Error uploading file.";
     }

@@ -29,21 +29,43 @@ $hideNavbarPages = ['login.php', 'register.php', 'forgot_password.php', 'reset_p
 <?php
 require 'config/db.php';
 
-function getBackgroundImage() {
+function getBackgroundMedia() {
     global $conn;
     $stmt = $conn->prepare("SELECT value FROM settings WHERE name = 'background_image'");
     $stmt->execute();
-    $backgroundImage = $stmt->fetchColumn();
+    return $stmt->fetchColumn() ?? "";
+}
 
-    return !empty($backgroundImage) ? $backgroundImage : "default-background.jpg";
-}
+$backgroundMedia = getBackgroundMedia();
 ?>
-<style>
-body {
-    background: url('<?= getBackgroundImage() ?>') no-repeat center center fixed;
-    background-size: cover;
-}
-</style>
+
+<?php if (!empty($backgroundMedia)): ?>
+    <?php if (strpos($backgroundMedia, '.mp4') !== false || strpos($backgroundMedia, '.mov') !== false): ?>
+        <video autoplay loop muted id="bgVideo">
+            <source src="<?= $backgroundMedia ?>" type="video/mp4">
+        </video>
+        <style>
+            #bgVideo {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                z-index: -1;
+            }
+        </style>
+    <?php else: ?>
+        <style>
+            body {
+                background: url('<?= $backgroundMedia ?>') no-repeat center center fixed;
+                background-size: cover;
+            }
+        </style>
+    <?php endif; ?>
+<?php endif; ?>
+
+
 
 
 <!DOCTYPE html>

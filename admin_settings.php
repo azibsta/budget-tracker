@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 }
 
 // ✅ Handle settings update (excluding file upload)
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_FILES['background_image'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_FILES['background_media'])) {
     foreach ($_POST as $key => $value) {
         $stmt = $conn->prepare("UPDATE settings SET value = ? WHERE name = ?");
         $stmt->execute([$value, $key]);
@@ -25,6 +25,8 @@ $stmt = $conn->prepare("SELECT name, value FROM settings");
 $stmt->execute();
 $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
+// ✅ Fetch available uploaded backgrounds
+$backgroundFiles = glob("uploads/*.{png,jpg,jpeg,mp4,mov}", GLOB_BRACE);
 ?>
 
 <div class="container mt-5">
@@ -52,18 +54,21 @@ $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Enable Feature X</label>
-            <select name="feature_x_enabled" class="form-control">
-                <option value="1" <?= ($settings['feature_x_enabled'] == '1') ? 'selected' : '' ?>>Enabled</option>
-                <option value="0" <?= ($settings['feature_x_enabled'] == '0') ? 'selected' : '' ?>>Disabled</option>
+            <label class="form-label">Select Background</label>
+            <select name="background_image" class="form-control">
+                <option value="">Default</option>
+                <?php foreach ($backgroundFiles as $file): ?>
+                    <option value="<?= $file ?>" <?= ($settings['background_image'] == $file) ? 'selected' : '' ?>>
+                        <?= basename($file) ?>
+                    </option>
+                <?php endforeach; ?>
             </select>
         </div>
 
         <button type="submit" class="btn btn-primary w-100">Save Settings</button>
     </form>
 
-    <!-- ✅ Background Upload Section -->
-    <h3 class="mt-4">Change Background Image</h3>
+    <h3 class="mt-4">Upload New Background (Image or Video)</h3>
 
     <?php if (isset($_SESSION['upload_message'])): ?>
         <div class="alert alert-info"><?= $_SESSION['upload_message']; unset($_SESSION['upload_message']); ?></div>
@@ -71,17 +76,11 @@ $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
     <form action="upload_background.php" method="POST" enctype="multipart/form-data" class="mb-4">
         <div class="mb-3">
-            <label class="form-label">Upload Background Image (PNG/JPEG)</label>
-            <input type="file" name="background_image" class="form-control" accept="image/png, image/jpeg" required>
+            <label class="form-label">Upload Background (PNG, JPEG, MP4, MOV)</label>
+            <input type="file" name="background_media" class="form-control" accept="image/png, image/jpeg, video/mp4, video/quicktime" required>
         </div>
-        <button type="submit" class="btn btn-primary">Upload Image</button>
+        <button type="submit" class="btn btn-primary">Upload</button>
     </form>
-
-    <?php if (!empty($settings['background_image'])): ?>
-        <h4>Current Background:</h4>
-        <img src="<?= $settings['background_image']; ?>" class="img-fluid rounded" style="max-width: 300px;">
-    <?php endif; ?>
-
 </div>
 
 <?php include 'footer.php'; ?>
