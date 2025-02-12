@@ -110,6 +110,7 @@ $backgroundMedia = getBackgroundMedia();
                             <?php } ?>
                         </a>
                     </li>
+                    <li class="nav-item"><a class="nav-link" href="report.php">Report Issue</a></li>
 
                     <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') { ?>
                         <li class="nav-item"><a class="nav-link text-warning" href="admin_dashboard.php">Admin Panel</a></li>

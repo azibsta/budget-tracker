@@ -1,10 +1,10 @@
 <?php
 session_start();
-require '../config/db.php';
-include '../header.php';
+require 'config/db.php';
+include 'header.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.php");
+    header("Location: login.php");
     exit();
 }
 
@@ -37,4 +37,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </form>
 </div>
 
-<?php include '../footer.php'; ?>
+<?php include 'footer.php'; ?>
