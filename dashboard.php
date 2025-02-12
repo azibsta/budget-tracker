@@ -80,11 +80,7 @@ $conn->prepare("UPDATE notifications SET is_read = 1 WHERE user_id = ?")->execut
 
 <div class="container mt-5">
     <h2 class="mb-4">Dashboard</h2>
-<p>Welcome to the IT Support page. How can we assist you today?</p>
-<!-- Add IT Support Link -->
-<div class="mb-4">
-    <a href="it_support.php" class="btn btn-info">Go to IT Support</a>
-</div>
+
     
     <!-- Show Budget Alerts -->
     <?php foreach ($alerts as $alert) {
