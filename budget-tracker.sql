@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 12, 2025 at 09:26 AM
+-- Generation Time: Feb 12, 2025 at 11:36 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -20,6 +20,54 @@ SET time_zone = "+00:00";
 --
 -- Database: `budget-tracker`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `advisor_answers`
+--
+
+DROP TABLE IF EXISTS `advisor_answers`;
+CREATE TABLE IF NOT EXISTS `advisor_answers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `question_id` int(11) NOT NULL,
+  `answer` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `username` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `question_id` (`question_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `advisor_answers`
+--
+
+INSERT INTO `advisor_answers` (`id`, `question_id`, `answer`, `created_at`, `username`) VALUES
+(2, 5, 'One guideline you can use is the 50-20-30 budget: Half your income goes to essentials, 20% is saved and invested, and 30% is leftover for wants.', '2025-02-12 10:02:19', '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `advisor_questions`
+--
+
+DROP TABLE IF EXISTS `advisor_questions`;
+CREATE TABLE IF NOT EXISTS `advisor_questions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `question` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `username` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `advisor_questions`
+--
+
+INSERT INTO `advisor_questions` (`id`, `user_id`, `question`, `created_at`, `username`) VALUES
+(5, 5, 'What Should I Include in My Budget?', '2025-02-12 09:40:32', '');
 
 -- --------------------------------------------------------
 
@@ -95,6 +143,30 @@ CREATE TABLE IF NOT EXISTS `feedbacks` (
 INSERT INTO `feedbacks` (`id`, `user_id`, `message`, `created_at`) VALUES
 (1, 1, 'hi hello hello', '2025-02-04 01:45:57'),
 (2, 4, 'baik do zib\r\n', '2025-02-11 17:43:36');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `goals`
+--
+
+DROP TABLE IF EXISTS `goals`;
+CREATE TABLE IF NOT EXISTS `goals` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `goal_date` date NOT NULL,
+  `goal_description` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `goals`
+--
+
+INSERT INTO `goals` (`id`, `user_id`, `goal_date`, `goal_description`, `created_at`) VALUES
+(1, 5, '2025-02-28', 'i wan to save 1000 by then', '2025-02-12 09:12:49');
 
 -- --------------------------------------------------------
 
@@ -194,7 +266,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `high_expense_limit` decimal(10,2) DEFAULT 500.00,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
@@ -203,11 +275,24 @@ CREATE TABLE IF NOT EXISTS `users` (
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `created_at`, `reset_token`, `high_expense_limit`) VALUES
 (1, 'Azib', 'azibfinn2004@gmail.com', '$2y$10$C9oRClgXCyB5X/rRsnMtTuwTUAM9Od6hSvxugPUDWthgznyzL/L46', 'user', '2025-02-03 13:07:07', '3eec1b3f0c20b9241aa1d48c4dc682ae320d727c42460468856c5680b09f12b1b072fc42f70adc2814ada412445dc36cf5a7', 500.00),
 (2, 'admin1', 'admin@example.com', '$2y$10$i7TH.jv/XvZ7LYCyl5DDAutAMrVIh3Equwtk219jx.1ioUB257Il.', 'admin', '2025-02-04 00:59:23', NULL, 500.00),
-(4, 'Mohammad Hazman', 'hazman@gmail.com', '$2y$10$FQwZr1RqRRj1hj6jcOfqVe2i8jdT6j7R.7QZolUAqGoQOY4owl.ji', 'user', '2025-02-11 16:58:05', NULL, 500.00);
+(4, 'Mohammad Hazman', 'hazman@gmail.com', '$2y$10$FQwZr1RqRRj1hj6jcOfqVe2i8jdT6j7R.7QZolUAqGoQOY4owl.ji', 'user', '2025-02-11 16:58:05', NULL, 500.00),
+(5, 'yongkit', 'yongkit1331@gmail.com', '$2y$10$QqcvkvbmOnJ4Oek7nohqBeaw83k3FBsYskg/TJxaGJ2Rr0lfB1g/G', 'advisor', '2025-02-12 08:33:19', NULL, 500.00);
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `advisor_answers`
+--
+ALTER TABLE `advisor_answers`
+  ADD CONSTRAINT `advisor_answers_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `advisor_questions` (`id`);
+
+--
+-- Constraints for table `advisor_questions`
+--
+ALTER TABLE `advisor_questions`
+  ADD CONSTRAINT `advisor_questions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `budgets`
@@ -226,6 +311,12 @@ ALTER TABLE `expenses`
 --
 ALTER TABLE `feedbacks`
   ADD CONSTRAINT `feedbacks_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `goals`
+--
+ALTER TABLE `goals`
+  ADD CONSTRAINT `goals_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `income`

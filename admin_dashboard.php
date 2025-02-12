@@ -85,6 +85,8 @@ $total_users = $stmt->fetch()['total_users'];
                             <select name="role" class="form-select" onchange="this.form.submit()">
                                 <option value="user" <?= $user['role'] == 'user' ? 'selected' : '' ?>>User</option>
                                 <option value="admin" <?= $user['role'] == 'admin' ? 'selected' : '' ?>>Admin</option>
+                                <option value="advisor" <?= $user['role'] == 'advisor' ? 'selected' : '' ?>>Advisor</option>
+                                <option value="it-support" <?= $user['role'] == 'it_suppory' ? 'selected' : '' ?>>IT Support</option>
                             </select>
                         </form>
                     </td>
