@@ -3,13 +3,19 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 12, 2025 at 03:15 AM
+-- Generation Time: Feb 12, 2025 at 09:26 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `budget-tracker`
@@ -131,6 +137,7 @@ CREATE TABLE IF NOT EXISTS `notifications` (
   `message` text NOT NULL,
   `is_read` tinyint(1) DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `is_broadcast` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -139,10 +146,10 @@ CREATE TABLE IF NOT EXISTS `notifications` (
 -- Dumping data for table `notifications`
 --
 
-INSERT INTO `notifications` (`id`, `user_id`, `message`, `is_read`, `created_at`) VALUES
-(1, 4, '⚠️ Budget limit exceeded for \'onlyfans\'! Your limit: $70000.00, Spent: $163464.00', 1, '2025-02-11 18:38:43'),
-(2, 4, '⚠️ Budget limit exceeded for \'onlyfans\'! Your limit: $70000.00, Spent: $238464.00', 1, '2025-02-11 18:43:29'),
-(3, 4, '⚠️ Large expense detected in \'onlyfans\'! Amount: $75000.00 (Your limit: $500.00)', 1, '2025-02-11 18:43:29');
+INSERT INTO `notifications` (`id`, `user_id`, `message`, `is_read`, `created_at`, `is_broadcast`) VALUES
+(1, 4, '⚠️ Budget limit exceeded for \'onlyfans\'! Your limit: $70000.00, Spent: $163464.00', 1, '2025-02-11 18:38:43', 0),
+(2, 4, '⚠️ Budget limit exceeded for \'onlyfans\'! Your limit: $70000.00, Spent: $238464.00', 1, '2025-02-11 18:43:29', 0),
+(3, 4, '⚠️ Large expense detected in \'onlyfans\'! Amount: $75000.00 (Your limit: $500.00)', 1, '2025-02-11 18:43:29', 0);
 
 -- --------------------------------------------------------
 
@@ -167,7 +174,7 @@ INSERT INTO `settings` (`id`, `name`, `value`) VALUES
 (1, 'theme', 'light'),
 (2, 'notifications_enabled', '1'),
 (3, 'feature_x_enabled', '1'),
-(4, 'background_image', '');
+(4, 'background_image', 'uploads/1739318155_calculator-money-notepad-keyboard-yellow-background-flat-lay.jpg');
 
 -- --------------------------------------------------------
 
@@ -232,3 +239,7 @@ ALTER TABLE `income`
 ALTER TABLE `notifications`
   ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
