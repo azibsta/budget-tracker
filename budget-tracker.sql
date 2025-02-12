@@ -3,25 +3,17 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 11, 2025 at 08:05 PM
+-- Generation Time: Feb 12, 2025 at 03:15 AM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
 --
 -- Database: `budget-tracker`
 --
-CREATE DATABASE IF NOT EXISTS `budget-tracker` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `budget-tracker`;
 
 -- --------------------------------------------------------
 
@@ -72,11 +64,7 @@ CREATE TABLE IF NOT EXISTS `expenses` (
 INSERT INTO `expenses` (`id`, `user_id`, `amount`, `category`, `date`, `created_at`) VALUES
 (4, 1, 300.00, 'girlfriend', '2025-02-04', '2025-02-11 18:18:32'),
 (5, 1, 500.00, 'girlfriend', '2025-02-04', '2025-02-11 18:18:32'),
-(6, 1, 200.00, 'Mak', '2025-02-04', '2025-02-11 18:18:32'),
-(7, 4, 42000.00, 'onlyfans', '2025-02-12', '2025-02-11 18:18:32'),
-(8, 4, 46464.00, 'onlyfans', '2025-02-12', '2025-02-11 18:18:32'),
-(9, 4, 75000.00, 'onlyfans', '2025-02-12', '2025-02-11 18:38:43'),
-(10, 4, 75000.00, 'onlyfans', '2025-02-12', '2025-02-11 18:43:29');
+(6, 1, 200.00, 'Mak', '2025-02-04', '2025-02-11 18:18:32');
 
 -- --------------------------------------------------------
 
@@ -169,7 +157,7 @@ CREATE TABLE IF NOT EXISTS `settings` (
   `value` text NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `settings`
@@ -178,7 +166,8 @@ CREATE TABLE IF NOT EXISTS `settings` (
 INSERT INTO `settings` (`id`, `name`, `value`) VALUES
 (1, 'theme', 'light'),
 (2, 'notifications_enabled', '1'),
-(3, 'feature_x_enabled', '1');
+(3, 'feature_x_enabled', '1'),
+(4, 'background_image', '');
 
 -- --------------------------------------------------------
 
@@ -243,7 +232,3 @@ ALTER TABLE `income`
 ALTER TABLE `notifications`
   ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
