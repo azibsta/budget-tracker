@@ -6,10 +6,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $message = trim($_POST['message']);
 
     if (!empty($message)) {
-        // ✅ Insert as a broadcast notification
+        // Insert as a broadcast notification
         $stmt = $conn->prepare("INSERT INTO notifications (user_id, message, is_broadcast) VALUES (?, ?, ?)");
-        $stmt->execute([NULL, $message, 1]); // Use NULL instead of 0 for broadcasts
-         // `user_id = 0` means it's sent to all users
+        $stmt->execute([null, $message, 1]); // Use null for broadcasts to indicate it's sent to all users
         
         $_SESSION['notify_message'] = "✅ Notification sent to all users!";
     } else {
